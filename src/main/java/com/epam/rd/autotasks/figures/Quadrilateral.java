@@ -1,13 +1,13 @@
 package com.epam.rd.autotasks.figures;
 
-import static java.lang.Math.sqrt;
-import static java.lang.Math.pow;
+import static java.lang.Math.*;
+
 class Quadrilateral extends Figure{
 
     private Point a1; private Point b1; private Point c1; private Point d1;
 
     protected double a; double b; double c; double d;// Відрізки
-    double diag1; double diag2;
+    double diagonalAC; double diagonalBD;
 
     double s; // Проща
     double h; // Висота
@@ -16,8 +16,8 @@ class Quadrilateral extends Figure{
 
     public Quadrilateral(Point a, Point b, Point c, Point d) {
 
-        if(a == null || b == null || c == null) throw new IllegalArgumentException();
-        if(a.equals(b) || a.equals(c) || b.equals(c))  throw new IllegalArgumentException();
+        if(a == null || b == null || c == null || d == null) throw new IllegalArgumentException();
+        if(a.equals(b) || a.equals(c) || a.equals(d)|| b.equals(c) || b.equals(d) || c.equals(d))  throw new IllegalArgumentException();
 
         this.a1 = a;
         this.b1 = b;
@@ -29,19 +29,23 @@ class Quadrilateral extends Figure{
         this.c = sideLenght(c, d);
         this.d = sideLenght(a, d);
 
-        diag1 = sideLenght(a, c);
-        diag2 = sideLenght(b, d);
+        if(this.a <= 0 || this.b <= 0 || this.c <= 0 || this.d <= 0) throw new IllegalArgumentException();
+
+        diagonalAC = sideLenght(a, c);
+        diagonalBD = sideLenght(b, d);
 
         if(area() <=0) throw new IllegalArgumentException();
         //якщо трикутники проходять свої умови то квадрат не є дегеративним
         Point test = centroid();
+
+        test360Angls();
 
     }
 
     public double area()
     {
         double temp = 0;
-        temp += 4*(  pow(diag1, 2)  * pow(diag2, 2) )-(  pow(  (pow(a, 2)+pow(c, 2)-pow(b, 2)-pow(d, 2)), 2) );
+        temp += 4*(  pow(diagonalAC, 2)  * pow(diagonalBD, 2) )-(  pow(  (pow(a, 2)+pow(c, 2)-pow(b, 2)-pow(d, 2)), 2) );
         temp = sqrt(temp)/4;
         return temp;
         //неточний варіант
@@ -86,16 +90,16 @@ class Quadrilateral extends Figure{
     public boolean isTheSame(Figure figure) {
 
         if(figure instanceof Quadrilateral) {
-            double diag3 = ((Quadrilateral) figure).getDiag1();
-            double diag4 = ((Quadrilateral) figure).getDiag1();
+            double diag3 = ((Quadrilateral) figure).getDiagonalAC();
+            double diag4 = ((Quadrilateral) figure).getDiagonalAC();
              /* Segment segAB = new Segment(((Quadrilateral) figure).getA1(), ((Quadrilateral) figure).getB1());
             Segment segBC = new Segment(((Quadrilateral) figure).getB1(), ((Quadrilateral) figure).getC1());
             Segment segCD = new Segment(((Quadrilateral) figure).getC1(), ((Quadrilateral) figure).getD1());
             Segment segAD = new Segment(((Quadrilateral) figure).getA1(), ((Quadrilateral) figure).getD1());
             */
             double area = figure.area();
-            System.out.println("centroid 1 = " + ((Quadrilateral) figure).centroid() + "centroid 2 = " + this.centroid());
-            if ((diag3 == this.diag1 || diag4 == this.diag2)
+            //System.out.println("centroid 1 = " + ((Quadrilateral) figure).centroid() + "centroid 2 = " + this.centroid());
+            if ((diag3 == this.diagonalAC || diag4 == this.diagonalBD)
                     && area == this.area()
                     && ((Quadrilateral) figure).centroid().equals(this.centroid())
             )
@@ -108,14 +112,32 @@ class Quadrilateral extends Figure{
         return false;
     }
 
+    void test360Angls(){
+
+        double angleA = Math.toDegrees(acos((a * a + d * d - diagonalBD * diagonalBD) / (2 * a * d)));
+        double angleB = Math.toDegrees(acos((b * b + a * a - diagonalAC * diagonalAC) / (2 * b * a)));
+        double angleC = Math.toDegrees(acos((c * c + b * b - diagonalBD * diagonalBD) / (2 * c * b)));
+        double angleD = Math.toDegrees(acos((d * d + c * c - diagonalAC * diagonalAC) / (2 * d * c)));
+
+        if(angleA > 180 || angleB > 180 || angleC > 180 || angleD >= 180) throw new IllegalArgumentException();
+
+        //System.out.println("Side angle = " + angleA + " / "+ angleB + " / "+ angleC + " / "+ angleD);
+       if(Math.abs(angleA+angleB+angleC+angleD) > 360.00005 || Math.abs(angleA+angleB+angleC+angleD) < 359) {
+            // System.out.println("Wrong angle = " + (angleAtA + angleAtB + angleAtC) + " / ");
+            throw new IllegalArgumentException();
+        }
+
+
+    }
+
     @Override
     public String pointsToString()
     {
         return a1.toString() + b1.toString() + c1.toString() + d1.toString();
     }
 
-    public double getDiag1() { return diag1; }
-    public double getDiag2() {return diag2; }
+    public double getDiagonalAC() { return diagonalAC; }
+    public double getDiagonalBD() {return diagonalBD; }
 
     public Point getA1() {
         return a1;

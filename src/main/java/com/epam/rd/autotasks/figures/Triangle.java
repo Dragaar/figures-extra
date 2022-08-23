@@ -16,6 +16,10 @@ class Triangle extends Figure{
     double h; // Висота
     double p; // Полу-периметр
     double Cent; // центр
+
+    double angleAtA;
+    double angleAtB;
+    double angleAtC;
     public Triangle(Point a, Point b, Point c) {
         this.a1 = a; this.b1 = b; this.c1 = c;
 
@@ -59,9 +63,9 @@ class Triangle extends Figure{
     }
 
     void test180Angls(){
-        double angleAtA = Math.toDegrees(acos((pow(b, 2) + pow(c, 2) - pow(a, 2))/(2*b*c)));
-        double angleAtB = Math.toDegrees(acos((pow(a, 2) + pow(c, 2) - pow(b, 2))/(2*a*c)));
-        double angleAtC = Math.toDegrees(acos((pow(a, 2) + pow(b, 2) - pow(c, 2))/(2*a*b)));
+        angleAtA = Math.toDegrees(acos((pow(b, 2) + pow(c, 2) - pow(a, 2))/(2*b*c)));
+        angleAtB = Math.toDegrees(acos((pow(a, 2) + pow(c, 2) - pow(b, 2))/(2*a*c)));
+        angleAtC = Math.toDegrees(acos((pow(a, 2) + pow(b, 2) - pow(c, 2))/(2*a*b)));
 
         if(angleAtA == 0 || angleAtB == 0 || angleAtC == 0) throw new IllegalArgumentException();
 
