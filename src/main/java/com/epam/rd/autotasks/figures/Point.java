@@ -31,7 +31,18 @@ class Point {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Point point = (Point) o;
-        return Double.compare(point.x, x) == 0 && Double.compare(point.y, y) == 0;
+        //double res1 = Math.ceil(point.x)-Math.ceil(x);
+        //double res2 = Math.ceil(point.y)-Math.ceil(y);
+
+        //System.out.println("res1 = " + Double.compare(point.x, x) + " res2 = " + Double.compare(point.x, x));
+
+        return deltaCompare(point.x, x, 0.001) && deltaCompare(point.y, y, 0.001);
+       // return Double.compare(point.x, x) == 0 && Double.compare(point.y, y) == 0;
+    }
+
+    private static boolean deltaCompare(double v1, double v2, double delta) {
+        //https://www.baeldung.com/java-comparing-doubles
+        return Math.abs(v1 - v2) < delta;
     }
 
     @Override

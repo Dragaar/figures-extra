@@ -8,6 +8,7 @@ class Circle extends Figure{
         this.centerPoint = centerPoint;
         this.radius = radius;
 
+        if(centerPoint == null || radius <=0) throw new IllegalArgumentException();
         if(area() <=0) throw new IllegalArgumentException();
     }
 
@@ -19,12 +20,27 @@ class Circle extends Figure{
 
     @Override
     public Point centroid() {
-        return null;
+        return centerPoint;
     }
 
     @Override
     public boolean isTheSame(Figure figure) {
-        return false;
+       if(figure instanceof Circle)
+       {
+           Point centr2 = ((Circle) figure).centerPoint;
+           double radius2 = ((Circle) figure).radius;
+           // System.out.println("Cent1 = " + this.centerPoint + "Cent2 = " + centr2 + "R1 = " + this.radius + " R2 = " + radius2);
+           if((centr2.equals(this.centerPoint)) && (deltaCompare(radius2, this.radius, 0.001)))
+           {
+               return true;
+           }
+       }
+       return false;
+    }
+
+    private static boolean deltaCompare(double v1, double v2, double delta) {
+        //https://www.baeldung.com/java-comparing-doubles
+        return Math.abs(v1 - v2) < delta;
     }
 
     @Override
